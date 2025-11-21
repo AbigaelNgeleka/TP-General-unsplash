@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galerie d'Inspiration Créative</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <h1><i class="fa-solid fa-palette"></i> Inspiration Créative</h1>
+            <form id="search-form">
+                <div class="search-wrapper">
+                    <input type="text" id="search-input" placeholder="Rechercher des images (ex: nature, architecture...)" required>
+                    <button type="submit" id="search-btn"><i class="fa-solid fa-search"></i></button>
+                </div>
+            </form>
+            <button id="toggle-favorites-btn" class="btn-secondary">
+                <i class="fa-solid fa-heart"></i> Favoris
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Section Favoris (Masquée par défaut) -->
+        <section id="favorites-section" class="hidden">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-heart"></i> Mes Favoris</h2>
+                <button id="close-favorites" class="btn-icon"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div id="favorites-grid" class="gallery-grid">
+                <!-- Les favoris seront injectés ici -->
+            </div>
+            <div id="no-favorites-msg" class="empty-state hidden">
+                <p>Vous n'avez pas encore de favoris.</p>
+            </div>
+        </section>
+
+        <!-- Section Résultats -->
+        <section id="gallery-section">
+            <div id="loader" class="loader hidden"></div>
+            <div id="gallery-grid" class="gallery-grid">
+                <!-- Les résultats seront injectés ici -->
+                <div class="empty-state">
+                    <i class="fa-regular fa-image"></i>
+                    <p>Lancez une recherche pour trouver l'inspiration.</p>
+                </div>
+            </div>
+            <div id="load-more-container" class="hidden">
+                <button id="load-more-btn" class="btn-primary">Voir plus</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Galerie d'Inspiration Créative - M2 CNM</p>
+            <p>Propulsé par l'API <a href="https://unsplash.com" target="_blank">Unsplash</a></p>
+        </div>
+    </footer>
+
+    <!-- Modal / Lightbox -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <img id="modal-image" src="" alt="">
+            <div class="modal-info">
+                <div class="photographer-info">
+                    <img id="modal-user-img" src="" alt="" class="user-avatar">
+                    <div>
+                        <h3 id="modal-user-name"></h3>
+                        <a id="modal-user-link" href="#" target="_blank">Voir le profil</a>
+                    </div>
+                </div>
+                <button id="modal-fav-btn" class="btn-icon"><i class="fa-regular fa-heart"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script type="module" src="assets/js/main.js"></script>
+</body>
+</html>
