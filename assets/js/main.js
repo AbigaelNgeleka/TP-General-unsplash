@@ -48,6 +48,7 @@ searchForm.addEventListener('submit', async (e) => {
 
 // Load More
 loadMoreBtn.addEventListener('click', async () => {
+    setLoadMoreState('loading');
     currentPage++;
     await performSearch(false);
 });
@@ -169,13 +170,16 @@ async function performSearch(clear) {
             showStatus('');
         }
 
-        if (data.total_pages > currentPage && data.results.length > 0) {
-            loadMoreContainer.classList.remove('hidden');
-        } else {
-            loadMoreContainer.classList.add('hidden');
-        }
+        const hasResults = data.results.length > 0;
+        const hasMore = data.total_pages > currentPage && hasResults;
+        updateLoadMoreVisibility(hasMore, hasResults);
     } catch (error) {
         console.error(error);
+        // Si la requête échoue lors d'un "load more", revenir à la page précédente
+        if (!clear && currentPage > 1) {
+            currentPage--;
+        }
+
         if (error.message && error.message.includes('Limite API')) {
             showStatus('Limite API atteinte ou clé invalide. Réessaie plus tard.', 'error');
         } else if (error.message && error.message.includes('403')) {
@@ -183,6 +187,7 @@ async function performSearch(clear) {
         } else {
             showStatus('Une erreur est survenue lors de la recherche.', 'error');
         }
+        setLoadMoreState('idle');
     } finally {
         toggleLoader(false);
         setSearchDisabled(false);
@@ -242,6 +247,38 @@ function updateGalleryUI() {
             btn.classList.remove('active');
         }
     });
+}
+
+function setLoadMoreState(state) {
+    if (state === 'loading') {
+        loadMoreBtn.disabled = true;
+        loadMoreBtn.textContent = 'Chargement...';
+        loadMoreBtn.classList.add('loading');
+    } else if (state === 'end') {
+        loadMoreBtn.disabled = true;
+        loadMoreBtn.textContent = 'Fin des résultats';
+        loadMoreBtn.classList.remove('loading');
+    } else {
+        loadMoreBtn.disabled = false;
+        loadMoreBtn.textContent = 'Voir plus';
+        loadMoreBtn.classList.remove('loading');
+    }
+}
+
+function updateLoadMoreVisibility(hasMore, hasResults) {
+    if (hasMore) {
+        loadMoreContainer.classList.remove('hidden');
+        setLoadMoreState('idle');
+        return;
+    }
+
+    if (hasResults) {
+        loadMoreContainer.classList.remove('hidden');
+        setLoadMoreState('end');
+    } else {
+        loadMoreContainer.classList.add('hidden');
+        setLoadMoreState('idle');
+    }
 }
 
 // Start the app

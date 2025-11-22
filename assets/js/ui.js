@@ -59,9 +59,10 @@ export function renderGallery(images, container, favoritesIds, clear = false) {
     }
 
     const fragment = document.createDocumentFragment();
-    images.forEach(image => {
+    images.forEach((image, index) => {
         const isFavorite = favoritesIds.includes(image.id);
         const card = createImageCard(image, isFavorite);
+        card.style.animationDelay = `${Math.min(index * 0.05, 0.5)}s`;
         fragment.appendChild(card);
     });
 
