@@ -22,6 +22,7 @@
             </form>
             <button id="toggle-favorites-btn" class="btn-secondary">
                 <i class="fa-solid fa-heart"></i> Favoris
+                <span id="favorites-count" class="badge">0</span>
             </button>
         </div>
     </header>
@@ -43,6 +44,7 @@
 
         <!-- Section Résultats -->
         <section id="gallery-section">
+            <div id="status-message" class="status-message hidden"></div>
             <div id="loader" class="loader hidden"></div>
             <div id="gallery-grid" class="gallery-grid">
                 <!-- Les résultats seront injectés ici -->

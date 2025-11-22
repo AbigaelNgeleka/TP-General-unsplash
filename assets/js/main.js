@@ -10,6 +10,7 @@ const DEFAULT_QUERY = 'design';
 // DOM Elements
 const searchForm = document.getElementById('search-form');
 const searchInput = document.getElementById('search-input');
+const searchBtn = document.getElementById('search-btn');
 const galleryGrid = document.getElementById('gallery-grid');
 const loadMoreContainer = document.getElementById('load-more-container');
 const loadMoreBtn = document.getElementById('load-more-btn');
@@ -18,6 +19,8 @@ const favoritesGrid = document.getElementById('favorites-grid');
 const toggleFavoritesBtn = document.getElementById('toggle-favorites-btn');
 const closeFavoritesBtn = document.getElementById('close-favorites');
 const noFavoritesMsg = document.getElementById('no-favorites-msg');
+const statusMessage = document.getElementById('status-message');
+const favoritesCount = document.getElementById('favorites-count');
 const modal = document.getElementById('modal');
 const closeModalBtn = document.querySelector('.close-modal');
 const modalFavBtn = document.getElementById('modal-fav-btn');
@@ -120,6 +123,29 @@ async function preloadInitialResults() {
     }
 }
 
+function setSearchDisabled(disabled) {
+    searchBtn.disabled = disabled;
+    searchInput.disabled = disabled;
+    if (disabled) {
+        searchBtn.classList.add('is-loading');
+    } else {
+        searchBtn.classList.remove('is-loading');
+    }
+}
+
+function showStatus(message = '', type = 'info') {
+    if (!message) {
+        statusMessage.classList.add('hidden');
+        statusMessage.textContent = '';
+        statusMessage.classList.remove('error', 'warning', 'success');
+        return;
+    }
+    statusMessage.textContent = message;
+    statusMessage.classList.remove('error', 'warning', 'success');
+    if (type) statusMessage.classList.add(type);
+    statusMessage.classList.remove('hidden');
+}
+
 // --- Logic ---
 
 /**
@@ -127,6 +153,8 @@ async function preloadInitialResults() {
  * @param {boolean} clear - Whether to clear existing results
  */
 async function performSearch(clear) {
+    setSearchDisabled(true);
+    showStatus('Recherche en cours...', 'info');
     toggleLoader(true);
     try {
         const data = await searchImages(currentQuery, currentPage);
@@ -134,16 +162,30 @@ async function performSearch(clear) {
         const favIds = favorites.map(f => f.id);
         renderGallery(data.results, galleryGrid, favIds, clear);
 
-        if (data.total_pages > currentPage) {
+        if (data.results.length === 0) {
+            loadMoreContainer.classList.add('hidden');
+            showStatus(`Aucun résultat trouvé pour "${currentQuery}".`, 'warning');
+        } else {
+            showStatus('');
+        }
+
+        if (data.total_pages > currentPage && data.results.length > 0) {
             loadMoreContainer.classList.remove('hidden');
         } else {
             loadMoreContainer.classList.add('hidden');
         }
     } catch (error) {
         console.error(error);
-        alert('Une erreur est survenue lors de la recherche.');
+        if (error.message && error.message.includes('Limite API')) {
+            showStatus('Limite API atteinte ou clé invalide. Réessaie plus tard.', 'error');
+        } else if (error.message && error.message.includes('403')) {
+            showStatus('Accès refusé (403). Vérifie ta clé ou réessaie plus tard.', 'error');
+        } else {
+            showStatus('Une erreur est survenue lors de la recherche.', 'error');
+        }
     } finally {
         toggleLoader(false);
+        setSearchDisabled(false);
     }
 }
 
@@ -170,6 +212,10 @@ function saveFavorites() {
 function updateFavoritesUI() {
     const favIds = favorites.map(f => f.id);
     renderGallery(favorites, favoritesGrid, favIds, true);
+
+    if (favoritesCount) {
+        favoritesCount.textContent = favorites.length;
+    }
 
     if (favorites.length === 0) {
         noFavoritesMsg.classList.remove('hidden');

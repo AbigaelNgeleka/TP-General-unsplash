@@ -112,6 +112,11 @@ h1 i {
     color: var(--primary-color);
 }
 
+#search-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 /* Buttons */
 .btn-primary {
     background-color: var(--primary-color);
@@ -177,6 +182,46 @@ main {
 
 #gallery-section {
     margin-top: 1rem;
+}
+
+.status-message {
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    background: #eef2ff;
+    color: #312e81;
+    border: 1px solid #c7d2fe;
+}
+
+.status-message.error {
+    background: #fef2f2;
+    color: #991b1b;
+    border-color: #fecdd3;
+}
+
+.status-message.warning {
+    background: #fffbeb;
+    color: #92400e;
+    border-color: #fcd34d;
+}
+
+.status-message.success {
+    background: #ecfdf3;
+    color: #065f46;
+    border-color: #bbf7d0;
+}
+
+.badge {
+    display: inline-block;
+    min-width: 22px;
+    padding: 0.15rem 0.5rem;
+    margin-left: 0.5rem;
+    border-radius: 999px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.75rem;
+    text-align: center;
+    line-height: 1.2;
 }
 
 .section-header {

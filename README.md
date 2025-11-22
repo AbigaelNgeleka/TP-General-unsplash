@@ -51,3 +51,6 @@ Puis ouvrez l'URL affichée dans votre navigateur.
 - HTML5
 - CSS3 (Grid, Flexbox, Variables)
 - JavaScript (ES6+, Fetch API, LocalStorage)
+
+## Auteur - Date
+AbigaelNgeleka - 22/11/2025
